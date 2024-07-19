@@ -25,7 +25,7 @@ There are some mandatory requirements:
 
 ## TL;DR
 - Execute `npm install`
-- Copy `.env.example` as `.env` and replace `POSTGRES_PASSWORD`, `DATABASE_URL` and `GITHUB_TOKEN` with your secrets.
+- Copy `.env.example` as `.env` and replace `GITHUB_TOKEN` with your secret. It is given for granted that security of PostgreSQL is not a concern as the development is only local.
 - Start the database: `docker-compose up -d`
 - Run the migrations: `npm run migrate`
 - Run integration tests: `npm run test:integration`
@@ -74,7 +74,6 @@ Options:
 
 ## PostgreSQL
 **TL;DR**
-- Replace the value of the PostgreSQL password in the `POSTGRES_PASSWORD` and `DATABASE_URL` environment variables in the `.env` file with your secrets
 - Start database: `docker-compose up -d`
 - Run migrations: `npm run migrate`
 
