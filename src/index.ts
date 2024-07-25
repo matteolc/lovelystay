@@ -5,12 +5,13 @@ import figlet from 'figlet';
 import chalk from 'chalk';
 
 import { getUserAvatarForTerminal } from '~/github/utils.js';
-import { upsertUser } from '~/db/fn/upsertUser.js';
+// import { upsertUser } from '~/db/fn/upsertUser.js';
 import { print, withErrorHandler } from '~/utils.js';
 import { fetchAndNormalise } from '~/normaliser.js';
 import type { UserSchema } from '~/db/types.js';
 import { LogLevel, LOVELYSTAY_HEX } from '~/const.js';
 import { listUsersWhere } from '~/db/fn/listUsersWhere.js';
+import { createUserAndLanguages } from 'db/fn/createUserAndLanguages';
 
 const program = new Command();
 
@@ -63,7 +64,7 @@ Fetches GitHub user and repositories information and stores it in the database
       printBanner();
       print('Fetching user information...', LogLevel.WARN);
       fetchAndNormalise(username)
-        .then(upsertUser())
+        .then(createUserAndLanguages())
         .then(prettyPrintUserOrUsers)
         // eslint-disable-next-line no-process-exit
         .then(() => process.exit());

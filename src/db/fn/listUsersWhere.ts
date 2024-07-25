@@ -1,28 +1,18 @@
 import type { pgClient, UserSchema } from '~/db/types.js';
 import { pg, pgFormat } from '~/db/dbClient.js';
 
-const addLocationCondition = (
-  sql: string[],
-  values: string[],
-  location?: string
-) => {
+const addLocationCondition = (sql: string[], location?: string) => {
   if (location) {
-    sql.push('AND location ILIKE $1');
-    values.push(`${location}%`);
+    sql.push(pgFormat('AND location ILIKE $1', [location]));
   }
-  return { sql, values };
+  return sql;
 };
 
-const addLanguagesCondition = (
-  sql: string[],
-  values: string[],
-  languages?: string[]
-) => {
-  if (languages) {
-    sql.push('AND languages @> $' + (values.length + 1));
-    values.push(`{${languages.join(',')}}`);
+const addLanguagesCondition = (sql: string[], languages?: string[]) => {
+  if (languages && languages.length) {
+    sql.push(pgFormat('AND l.name IN ($1:csv)', [languages]));
   }
-  return { sql, values };
+  return sql;
 };
 
 // Fetches users by location (case-insensitive).
@@ -38,13 +28,23 @@ const listUsersWhere =
     location?: string;
     languages?: string[];
   }) => {
-    let sql = ['SELECT * FROM users WHERE 1=1'];
-    let values: string[] = [];
-    ({ sql, values } = addLocationCondition(sql, values, location));
-    ({ sql, values } = addLanguagesCondition(sql, values, languages));
+    let sql = [
+      'SELECT DISTINCT ON (u.login) u.login, u.name,',
+      'u.public_repos, u.followers, u.location,',
+      'ARRAY_AGG(l.name) AS languages',
+      'FROM users u',
+      'LEFT OUTER JOIN users_languages ul ON ul.user_id = u.id',
+      'LEFT OUTER JOIN languages l ON l.id = ul.language_id',
+      'WHERE 1=1',
+    ];
+    sql = addLocationCondition(sql, location);
+    sql = addLanguagesCondition(sql, languages);
+    sql.push(
+      'GROUP BY u.login, u.name, u.public_repos, u.followers, u.location'
+    );
+    sql.push('ORDER BY u.login');
 
-    const query = pgFormat(sql.join(' '), values);
-    return client.query<UserSchema>(query);
+    return client.any<UserSchema>(sql.join(' '));
   };
 
 export { listUsersWhere };
