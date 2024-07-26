@@ -1,9 +1,9 @@
-import type { pgClient, UserSchema } from '~/db/types.js';
+import type { pgClient } from '~/db/types.js';
 import { pg } from '~/db/dbClient.js';
-
-import { upsertUser } from './upsertUser';
-import { createLanguages } from './createLanguages';
-import { createUsersLanguages } from './createUsersLanguages';
+import type { UserWithLanguages } from '~/types.js';
+import { upsertUser } from '~/db/fn/upsertUser.js';
+import { createLanguages } from '~/db/fn/createLanguages.js';
+import { createUsersLanguages } from '~/db/fn/createUsersLanguages.js';
 
 // Inserts a GitHub user into the database.
 // If the user already exists, updates the existing record.
@@ -27,7 +27,7 @@ const createUserAndLanguages =
     followers,
     avatar_url,
     languages,
-  }: Partial<UserSchema> & { languages: string[] }): Promise<UserSchema> => {
+  }: UserWithLanguages): Promise<UserWithLanguages> => {
     return client.tx(async (t) => {
       const user = await upsertUser(t)({
         login,
@@ -40,7 +40,7 @@ const createUserAndLanguages =
       if (languages.length) {
         await createLanguages(t)({ languages });
         await createUsersLanguages(t)({
-          user,
+          ...user,
           languages,
         });
       }

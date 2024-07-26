@@ -1,8 +1,9 @@
 import type { ITask } from 'pg-promise';
 
-import type { pgClient, UserSchema } from '~/db/types.js';
+import type { pgClient } from '~/db/types.js';
 import { pg, pgColumnSet, pgInsert } from '~/db/dbClient.js';
 import { findLanguages } from '~/db/fn/findLanguages.js';
+import type { UserWithLanguages } from 'types';
 
 const columnSet = new pgColumnSet(['user_id', 'language_id'], {
   table: 'users_languages',
@@ -10,18 +11,12 @@ const columnSet = new pgColumnSet(['user_id', 'language_id'], {
 
 const createUsersLanguages =
   (client: ITask<object> | pgClient = pg) =>
-  async ({
-    user,
-    languages,
-  }: {
-    user: UserSchema;
-    languages: string[];
-  }): Promise<null> => {
+  async ({ id: userId, languages }: UserWithLanguages): Promise<null> => {
     const langagues = await findLanguages(client)({ languages });
     const insert = pgInsert(
       langagues.map(({ id }) => ({
         language_id: id,
-        user_id: user.id,
+        user_id: userId,
       })),
       columnSet
     );

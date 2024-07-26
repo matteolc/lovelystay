@@ -1,4 +1,4 @@
-import type { LanguageSchema, UserSchema } from 'db/types';
+import type { UserWithLanguages } from 'types';
 import { fetchUserInfo } from '~/github/fn/fetchUserInfo.js';
 import { fetchUserRepos } from '~/github/fn/fetchUserRepos.js';
 import { getUserLanguages } from '~/github/fn/getUserLanguages.js';
@@ -27,7 +27,7 @@ const fetchAndNormalise = async (login: string) => {
     public_repos,
     followers,
     avatar_url,
-  } as UserSchema & { languages: LanguageSchema['name'][] };
+  } as UserWithLanguages;
 };
 
 export { fetchAndNormalise };

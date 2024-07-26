@@ -20,11 +20,6 @@ type LanguageSchema = {
   updated_at: Date;
 };
 
-type UsersLanguagesSchema = {
-  user_id: string;
-  language_id: string;
-};
-
 type pgClient = pgPromise.IDatabase<object, pgSubset.IClient>;
 
-export type { UserSchema, LanguageSchema, UsersLanguagesSchema, pgClient };
+export type { UserSchema, LanguageSchema, pgClient };

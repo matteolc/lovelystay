@@ -13,7 +13,11 @@ const columnSet = new pgColumnSet(['name'], { table: 'languages' });
 // @returns the languages
 const createLanguages =
   (client: ITask<object> | pgClient = pg) =>
-  async ({ languages }: { languages: string[] }): Promise<LanguageSchema[]> => {
+  async ({
+    languages,
+  }: {
+    languages: LanguageSchema['name'][];
+  }): Promise<LanguageSchema[]> => {
     const insert = pgInsert(
       languages.map((name) => ({ name })),
       columnSet
