@@ -93,7 +93,7 @@ The GitHub API is used to fetch information about users, including their locatio
 - [Repositories](https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user): Fetches user repositories, including programming languages used.
 
 ## Schema
-For the sake of simplicity the database for this application consists of a single `users` table. In a production scenario it might be desirable to split the `users` and `languages` table; since the relationship between users and languages is many-to-many, it would be advisable to use a join table `user_languages`. It might also be desirable to use a `repositories` table instead of just `languages`, in case future requirements other than languages arise.
+The schema for this application consists of a `users` table, a `languages` table and a `users_languages`, which is the join table between users and languages.
 
 ### Users Table
 
@@ -101,14 +101,25 @@ For the sake of simplicity the database for this application consists of a singl
 - `login`: The GitHub user login, unique.
 - `name`: Name of the user. Can be null.
 - `location`: Location of the user. Can be null.
-- `languages`: Programming languages of the user (array of `VARCHAR(50)`). Can be an empty array.
 - `public_repos`: Number of public repositories for the user.
 - `followers`: Number of user followers.
 - `avatar_url`: The user avatar URL.
 - `createdAt`: Timestamp, not null. Date and time when the user was added to the database.
 - `updatedAt`: Timestamp, not null. Date and time when the user information was last updated.
 
-The users table has indexes on `location`, `name`, `langagues` and a unique index on `login`.
+The users table has indexes on `location`, `name` and a unique index on `login`.
+
+### Languages Table
+
+- `id`: Primary key, UUID, auto-increment.
+- `name`: Name of the language.
+
+### Users Languages Table
+
+- `user_id`: The referenced user ID.
+- `language_id`: The referenced language ID.
+
+`user_id` and `language_id` form the primary key for the table.
 
 ## Program
 The program is built with [commander.js](https://github.com/tj/commander.js).

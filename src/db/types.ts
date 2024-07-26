@@ -6,7 +6,6 @@ type UserSchema = {
   login: string;
   name: string | null;
   location: string | null;
-  languages: string[];
   public_repos: number | null;
   followers: number | null;
   avatar_url: string | null;
@@ -14,6 +13,13 @@ type UserSchema = {
   updated_at: Date;
 };
 
+type LanguageSchema = {
+  id: string;
+  name: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
 type pgClient = pgPromise.IDatabase<object, pgSubset.IClient>;
 
-export type { UserSchema, pgClient };
+export type { UserSchema, LanguageSchema, pgClient };

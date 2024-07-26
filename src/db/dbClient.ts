@@ -13,5 +13,8 @@ invariant(DATABASE_URL, 'DATABASE_URL env variable is required');
 const pg = pgp(DATABASE_URL);
 
 const pgFormat = pgPromise.as.format;
+const pgColumnSet = pgp.helpers.ColumnSet;
+const pgInsert = pgp.helpers.insert;
+const pgValues = pgp.helpers.values;
 
-export { pg, pgFormat };
+export { pg, pgFormat, pgColumnSet, pgInsert, pgValues };
