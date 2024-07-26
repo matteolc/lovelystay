@@ -5,7 +5,6 @@ import figlet from 'figlet';
 import chalk from 'chalk';
 
 import { getUserAvatarForTerminal } from '~/github/utils.js';
-// import { upsertUser } from '~/db/fn/upsertUser.js';
 import { print, withErrorHandler } from '~/utils.js';
 import { fetchAndNormalise } from '~/normaliser.js';
 import type { UserSchema } from '~/db/types.js';

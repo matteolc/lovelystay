@@ -11,7 +11,7 @@ const columnSet = new pgColumnSet(['name'], { table: 'languages' });
 // @param client - the database client
 // @param languages - the language names
 // @returns the languages
-const upsertLanguages =
+const createLanguages =
   (client: ITask<object> | pgClient = pg) =>
   async ({ languages }: { languages: string[] }): Promise<LanguageSchema[]> => {
     const insert = pgInsert(
@@ -23,4 +23,4 @@ const upsertLanguages =
     );
   };
 
-export { upsertLanguages };
+export { createLanguages };

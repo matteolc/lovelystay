@@ -2,7 +2,7 @@ import type { pgClient, UserSchema } from '~/db/types.js';
 import { pg } from '~/db/dbClient.js';
 
 import { upsertUser } from './upsertUser';
-import { upsertLanguages } from './upsertLanguages';
+import { createLanguages } from './createLanguages';
 import { createUsersLanguages } from './createUsersLanguages';
 
 // Inserts a GitHub user into the database.
@@ -37,11 +37,13 @@ const createUserAndLanguages =
         followers,
         avatar_url,
       });
-      const _languages = await upsertLanguages(t)({ languages });
-      await createUsersLanguages(t)({
-        user,
-        languages: _languages,
-      });
+      if (languages.length) {
+        await createLanguages(t)({ languages });
+        await createUsersLanguages(t)({
+          user,
+          languages,
+        });
+      }
       return { ...user, languages };
     });
   };
